@@ -14,8 +14,6 @@ app.use(express.json());
 
 app.use(UserRoutes);
 
-app.use(CheckToken);
-
 app.get("/api/status", (req, res) => {
     return res.status(200).json({
         service: "Auth-API",
