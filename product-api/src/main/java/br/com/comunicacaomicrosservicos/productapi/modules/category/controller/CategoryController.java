@@ -1,8 +1,8 @@
-package br.com.comunicacaomicrosservicos.productapi.modules.produto.controller;
+package br.com.comunicacaomicrosservicos.productapi.modules.category.controller;
 
-import br.com.comunicacaomicrosservicos.productapi.modules.produto.dto.CategoryRequest;
-import br.com.comunicacaomicrosservicos.productapi.modules.produto.dto.CategoryResponse;
-import br.com.comunicacaomicrosservicos.productapi.modules.produto.service.CategoryService;
+import br.com.comunicacaomicrosservicos.productapi.modules.category.dto.CategoryRequest;
+import br.com.comunicacaomicrosservicos.productapi.modules.category.dto.CategoryResponse;
+import br.com.comunicacaomicrosservicos.productapi.modules.category.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

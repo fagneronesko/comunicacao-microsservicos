@@ -1,7 +1,6 @@
-package br.com.comunicacaomicrosservicos.productapi.modules.produto.model;
+package br.com.comunicacaomicrosservicos.productapi.modules.category.model;
 
-import br.com.comunicacaomicrosservicos.productapi.modules.produto.dto.CategoryRequest;
-import br.com.comunicacaomicrosservicos.productapi.modules.produto.dto.CategoryResponse;
+import br.com.comunicacaomicrosservicos.productapi.modules.category.dto.CategoryRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

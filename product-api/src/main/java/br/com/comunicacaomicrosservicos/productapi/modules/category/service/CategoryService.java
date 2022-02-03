@@ -1,11 +1,11 @@
-package br.com.comunicacaomicrosservicos.productapi.modules.produto.service;
+package br.com.comunicacaomicrosservicos.productapi.modules.category.service;
 
 import br.com.comunicacaomicrosservicos.productapi.config.exception.ValidationException;
-import br.com.comunicacaomicrosservicos.productapi.modules.produto.dto.CategoryRequest;
-import br.com.comunicacaomicrosservicos.productapi.modules.produto.dto.CategoryResponse;
-import br.com.comunicacaomicrosservicos.productapi.modules.produto.model.Category;
-import br.com.comunicacaomicrosservicos.productapi.modules.produto.repository.CategoryRepository;
-import br.com.comunicacaomicrosservicos.productapi.modules.produto.utils.Constants;
+import br.com.comunicacaomicrosservicos.productapi.modules.category.dto.CategoryRequest;
+import br.com.comunicacaomicrosservicos.productapi.modules.category.dto.CategoryResponse;
+import br.com.comunicacaomicrosservicos.productapi.modules.category.model.Category;
+import br.com.comunicacaomicrosservicos.productapi.modules.category.repository.CategoryRepository;
+import br.com.comunicacaomicrosservicos.productapi.modules.category.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class CategoryService {
 
     private void validateName(Category category) {
         if (isEmpty(category.getDescription())) {
-            throw new ValidationException(Constants.CATEGORY_DESCRIPTION_NOT_INFORMED);
+            throw new ValidationException(Constants.EX_DESCRIPTION_NOT_INFORMED);
         }
     }
 }

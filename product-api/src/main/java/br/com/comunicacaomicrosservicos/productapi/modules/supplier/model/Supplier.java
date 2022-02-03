@@ -1,4 +1,4 @@
-package br.com.comunicacaomicrosservicos.productapi.modules.produto.model;
+package br.com.comunicacaomicrosservicos.productapi.modules.supplier.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
