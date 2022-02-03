@@ -5,7 +5,7 @@ import br.com.comunicacaomicrosservicos.productapi.modules.category.dto.Category
 import br.com.comunicacaomicrosservicos.productapi.modules.category.dto.CategoryResponse;
 import br.com.comunicacaomicrosservicos.productapi.modules.category.model.Category;
 import br.com.comunicacaomicrosservicos.productapi.modules.category.repository.CategoryRepository;
-import br.com.comunicacaomicrosservicos.productapi.modules.category.utils.Constants;
+import br.com.comunicacaomicrosservicos.productapi.modules.category.utils.CategoryConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class CategoryService {
 
     private void validateName(Category category) {
         if (isEmpty(category.getDescription())) {
-            throw new ValidationException(Constants.EX_DESCRIPTION_NOT_INFORMED);
+            throw new ValidationException(CategoryConstants.DESCRIPTION_NOT_INFORMED);
         }
     }
 }
