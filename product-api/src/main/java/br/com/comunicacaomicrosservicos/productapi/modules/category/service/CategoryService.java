@@ -1,11 +1,10 @@
 package br.com.comunicacaomicrosservicos.productapi.modules.category.service;
 
-import br.com.comunicacaomicrosservicos.productapi.config.exception.ValidationException;
 import br.com.comunicacaomicrosservicos.productapi.modules.category.dto.CategoryRequest;
 import br.com.comunicacaomicrosservicos.productapi.modules.category.dto.CategoryResponse;
 import br.com.comunicacaomicrosservicos.productapi.modules.category.model.Category;
 import br.com.comunicacaomicrosservicos.productapi.modules.category.repository.CategoryRepository;
-import br.com.comunicacaomicrosservicos.productapi.modules.category.utils.CategoryConstants;
+import br.com.comunicacaomicrosservicos.productapi.modules.category.utils.CategoryExceptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,15 +17,18 @@ public class CategoryService {
     private CategoryRepository repository;
 
     public CategoryResponse save(CategoryRequest request) {
-        var category = Category.of(request);
-        validateName(category);
-
-        return CategoryResponse.of(repository.save(category));
+        validateName(request);
+        return CategoryResponse.of(repository.save(Category.of(request)));
     }
 
-    private void validateName(Category category) {
-        if (isEmpty(category.getDescription())) {
-            throw new ValidationException(CategoryConstants.DESCRIPTION_NOT_INFORMED);
+    public Category findById(Integer id) {
+        return repository.findById(id)
+            .orElseThrow(() -> CategoryExceptions.EX_ID_NOT_EXISTS);
+    }
+
+    private void validateName(CategoryRequest request) {
+        if (isEmpty(request.getDescription())) {
+            throw CategoryExceptions.EX_DESCRIPTION_NOT_INFORMED;
         }
     }
 }

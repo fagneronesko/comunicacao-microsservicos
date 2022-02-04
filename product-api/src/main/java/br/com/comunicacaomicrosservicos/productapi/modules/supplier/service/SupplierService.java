@@ -1,11 +1,10 @@
 package br.com.comunicacaomicrosservicos.productapi.modules.supplier.service;
 
-import br.com.comunicacaomicrosservicos.productapi.config.exception.ValidationException;
 import br.com.comunicacaomicrosservicos.productapi.modules.supplier.dto.SupplierRequest;
 import br.com.comunicacaomicrosservicos.productapi.modules.supplier.dto.SupplierResponse;
 import br.com.comunicacaomicrosservicos.productapi.modules.supplier.model.Supplier;
 import br.com.comunicacaomicrosservicos.productapi.modules.supplier.repository.SupplierRepository;
-import br.com.comunicacaomicrosservicos.productapi.modules.supplier.utils.SupplierConstants;
+import br.com.comunicacaomicrosservicos.productapi.modules.supplier.utils.SupplierExceptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,15 +17,18 @@ public class SupplierService {
     private SupplierRepository repository;
 
     public SupplierResponse save(SupplierRequest request) {
-        var supplier = Supplier.of(request);
-        validateName(supplier);
-
-        return SupplierResponse.of(repository.save(supplier));
+        validateName(request);
+        return SupplierResponse.of(repository.save(Supplier.of(request)));
     }
 
-    private void validateName(Supplier supplier) {
-        if (isEmpty(supplier.getName())) {
-            throw new ValidationException(SupplierConstants.NAME_NOT_INFORMED);
+    public Supplier findById(Integer id) {
+        return repository.findById(id)
+            .orElseThrow(() -> SupplierExceptions.EX_ID_NOT_EXISTS);
+    }
+
+    private void validateName(SupplierRequest request) {
+        if (isEmpty(request.getName())) {
+            throw SupplierExceptions.EX_NAME_NOT_INFORMED;
         }
     }
 }
