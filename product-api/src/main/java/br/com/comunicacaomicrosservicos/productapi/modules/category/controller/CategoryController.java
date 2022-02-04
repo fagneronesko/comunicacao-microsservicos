@@ -4,10 +4,9 @@ import br.com.comunicacaomicrosservicos.productapi.modules.category.dto.Category
 import br.com.comunicacaomicrosservicos.productapi.modules.category.dto.CategoryResponse;
 import br.com.comunicacaomicrosservicos.productapi.modules.category.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/category")
@@ -19,5 +18,20 @@ public class CategoryController {
     @PostMapping
     public CategoryResponse save(@RequestBody CategoryRequest request) {
         return service.save(request);
+    }
+
+    @GetMapping
+    public List<CategoryResponse> findAll() {
+        return service.findAll();
+    }
+
+    @GetMapping("{id}")
+    public CategoryResponse findById(@PathVariable Integer id) {
+        return CategoryResponse.of(service.findById(id));
+    }
+
+    @GetMapping("description/{description}")
+    public List<CategoryResponse> findByDescription(@PathVariable String description) {
+        return service.findByDescription(description);
     }
 }

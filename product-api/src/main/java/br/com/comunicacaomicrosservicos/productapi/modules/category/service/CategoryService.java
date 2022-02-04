@@ -8,6 +8,9 @@ import br.com.comunicacaomicrosservicos.productapi.modules.category.utils.Catego
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Service
@@ -22,8 +25,29 @@ public class CategoryService {
     }
 
     public Category findById(Integer id) {
+        if (isEmpty(id)) {
+            throw CategoryExceptions.EX_ID_NOT_INFORMED;
+        }
         return repository.findById(id)
             .orElseThrow(() -> CategoryExceptions.EX_ID_NOT_EXISTS);
+    }
+
+    public List<CategoryResponse> findAll() {
+        return repository.findAll()
+            .stream()
+            .map(CategoryResponse::of)
+            .collect(Collectors.toList());
+    }
+
+    public List<CategoryResponse> findByDescription(String description) {
+        if (isEmpty(description)) {
+            throw CategoryExceptions.EX_DESCRIPTION_NOT_INFORMED;
+        }
+
+        return repository.findByDescriptionIgnoreCaseContaining(description)
+            .stream()
+            .map(CategoryResponse::of)
+            .collect(Collectors.toList());
     }
 
     private void validateName(CategoryRequest request) {
