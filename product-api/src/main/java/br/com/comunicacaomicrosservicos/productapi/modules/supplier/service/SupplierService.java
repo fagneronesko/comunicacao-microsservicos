@@ -8,6 +8,10 @@ import br.com.comunicacaomicrosservicos.productapi.modules.supplier.utils.Suppli
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Service
@@ -22,8 +26,29 @@ public class SupplierService {
     }
 
     public Supplier findById(Integer id) {
+        if (isNull(id)) {
+            throw SupplierExceptions.EX_NAME_NOT_INFORMED;
+        }
         return repository.findById(id)
             .orElseThrow(() -> SupplierExceptions.EX_ID_NOT_EXISTS);
+    }
+
+    public List<SupplierResponse> findAll() {
+        return repository.findAll()
+            .stream()
+            .map(SupplierResponse::of)
+            .collect(Collectors.toList());
+    }
+
+    public List<SupplierResponse> findByName(String name) {
+        if (isEmpty(name)) {
+            throw SupplierExceptions.EX_NAME_NOT_INFORMED;
+        }
+
+        return repository.findByNameIgnoreCaseContaining(name)
+            .stream()
+            .map(SupplierResponse::of)
+            .collect(Collectors.toList());
     }
 
     private void validateName(SupplierRequest request) {
