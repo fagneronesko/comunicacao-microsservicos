@@ -7,6 +7,12 @@ public class ProductExceptions {
     public static ValidationException EX_NAME_NOT_INFORMED =
         new ValidationException("The product name was not informed.");
 
+    public static ValidationException EX_ID_NOT_INFORMED =
+        new ValidationException("The product ID was not informed.");
+
+    public static ValidationException EX_ID_NOT_EXISTS =
+        new ValidationException("There's no product for the given ID.");
+
     public static ValidationException EX_QUANTITY_NOT_INFORMED =
         new ValidationException("The product quantity was not informed.");
 

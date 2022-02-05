@@ -6,9 +6,15 @@ import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductRe
 import br.com.comunicacaomicrosservicos.productapi.modules.product.model.Product;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.repository.ProductRepository;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.utils.ProductExceptions;
+import br.com.comunicacaomicrosservicos.productapi.modules.supplier.dto.SupplierResponse;
+import br.com.comunicacaomicrosservicos.productapi.modules.supplier.model.Supplier;
 import br.com.comunicacaomicrosservicos.productapi.modules.supplier.service.SupplierService;
+import br.com.comunicacaomicrosservicos.productapi.modules.supplier.utils.SupplierExceptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -35,6 +41,54 @@ public class ProductService {
                     request,
                     categoryService.findById(request.getCategoryId()),
                     supplierService.findById(request.getSupplierId()))));
+    }
+
+    public Product findById(Integer id) {
+        if (isNull(id)) {
+            throw ProductExceptions.EX_ID_NOT_INFORMED;
+        }
+        return repository.findById(id)
+            .orElseThrow(() -> ProductExceptions.EX_ID_NOT_EXISTS);
+    }
+
+    public List<ProductResponse> findAll() {
+        return repository.findAll()
+            .stream()
+            .map(ProductResponse::of)
+            .collect(Collectors.toList());
+    }
+
+    public List<ProductResponse> findByName(String name) {
+        if (isEmpty(name)) {
+            throw ProductExceptions.EX_NAME_NOT_INFORMED;
+        }
+
+        return repository.findByNameIgnoreCaseContaining(name)
+            .stream()
+            .map(ProductResponse::of)
+            .collect(Collectors.toList());
+    }
+
+    public List<ProductResponse> findByCategoryId(Integer categoryId) {
+        if (isNull(categoryId)) {
+            throw ProductExceptions.EX_CATEGORY_ID_NOT_INFORMED;
+        }
+
+        return repository.findByCategoryId(categoryId)
+            .stream()
+            .map(ProductResponse::of)
+            .collect(Collectors.toList());
+    }
+
+    public List<ProductResponse> findBySupplierId(Integer supplierId) {
+        if (isNull(supplierId)) {
+            throw ProductExceptions.EX_SUPPLIER_ID_NOT_INFORMED;
+        }
+
+        return repository.findBySupplierId(supplierId)
+            .stream()
+            .map(ProductResponse::of)
+            .collect(Collectors.toList());
     }
 
     private void validateProductData(ProductRequest request) {
