@@ -1,5 +1,6 @@
 package br.com.comunicacaomicrosservicos.productapi.modules.product.service;
 
+import br.com.comunicacaomicrosservicos.productapi.config.exception.SucessResponse;
 import br.com.comunicacaomicrosservicos.productapi.modules.category.service.CategoryService;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductRequest;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductResponse;
@@ -9,13 +10,14 @@ import br.com.comunicacaomicrosservicos.productapi.modules.product.utils.Product
 import br.com.comunicacaomicrosservicos.productapi.modules.supplier.dto.SupplierResponse;
 import br.com.comunicacaomicrosservicos.productapi.modules.supplier.model.Supplier;
 import br.com.comunicacaomicrosservicos.productapi.modules.supplier.service.SupplierService;
-import br.com.comunicacaomicrosservicos.productapi.modules.supplier.utils.SupplierExceptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static br.com.comunicacaomicrosservicos.productapi.modules.product.utils.ProductConstants.DELETE_SUCCESS;
+import static br.com.comunicacaomicrosservicos.productapi.modules.product.utils.ProductExceptions.*;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -43,12 +45,23 @@ public class ProductService {
                     supplierService.findById(request.getSupplierId()))));
     }
 
+    public ProductResponse update(ProductRequest request, Integer id) {
+        validateProductData(request);
+        validateId(id);
+
+        var product = Product.of(
+            request,
+            categoryService.findById(request.getCategoryId()),
+            supplierService.findById(request.getSupplierId()));
+        product.setId(id);
+
+        return ProductResponse.of(repository.save(product));
+    }
+
     public Product findById(Integer id) {
-        if (isNull(id)) {
-            throw ProductExceptions.EX_ID_NOT_INFORMED;
-        }
+        validateId(id);
         return repository.findById(id)
-            .orElseThrow(() -> ProductExceptions.EX_ID_NOT_EXISTS);
+            .orElseThrow(() -> EX_ID_NOT_EXISTS);
     }
 
     public List<ProductResponse> findAll() {
@@ -60,7 +73,7 @@ public class ProductService {
 
     public List<ProductResponse> findByName(String name) {
         if (isEmpty(name)) {
-            throw ProductExceptions.EX_NAME_NOT_INFORMED;
+            throw EX_NAME_NOT_INFORMED;
         }
 
         return repository.findByNameIgnoreCaseContaining(name)
@@ -71,7 +84,7 @@ public class ProductService {
 
     public List<ProductResponse> findByCategoryId(Integer categoryId) {
         if (isNull(categoryId)) {
-            throw ProductExceptions.EX_CATEGORY_ID_NOT_INFORMED;
+            throw EX_CATEGORY_ID_NOT_INFORMED;
         }
 
         return repository.findByCategoryId(categoryId)
@@ -82,13 +95,27 @@ public class ProductService {
 
     public List<ProductResponse> findBySupplierId(Integer supplierId) {
         if (isNull(supplierId)) {
-            throw ProductExceptions.EX_SUPPLIER_ID_NOT_INFORMED;
+            throw EX_SUPPLIER_ID_NOT_INFORMED;
         }
 
         return repository.findBySupplierId(supplierId)
             .stream()
             .map(ProductResponse::of)
             .collect(Collectors.toList());
+    }
+
+    public SucessResponse delete(Integer id) {
+        validateId(id);
+        repository.deleteById(id);
+        return SucessResponse.create(DELETE_SUCCESS);
+    }
+
+    public Boolean existsByCategoryId(Integer categoryId) {
+        return repository.existsByCategoryId(categoryId);
+    }
+
+    public Boolean existsBySupplierId(Integer supplierId) {
+        return repository.existsBySupplierId(supplierId);
     }
 
     private void validateProductData(ProductRequest request) {
@@ -99,7 +126,13 @@ public class ProductService {
 
     private void validateName(ProductRequest request) {
         if (isEmpty(request.getName())) {
-            throw ProductExceptions.EX_NAME_NOT_INFORMED;
+            throw EX_NAME_NOT_INFORMED;
+        }
+    }
+
+    private void validateId(Integer id) {
+        if (isNull(id)) {
+            throw EX_ID_NOT_INFORMED;
         }
     }
 

@@ -12,4 +12,7 @@ public class SupplierExceptions {
 
     public static ValidationException EX_ID_NOT_EXISTS =
         new ValidationException("There's no supplier for the given ID.");
+
+    public static ValidationException EX_ALREADY_DEFINED_PRODUCT_BY_ID =
+        new ValidationException("You cannot delete this supplier because it's already defined by a product.");
 }

@@ -1,5 +1,6 @@
 package br.com.comunicacaomicrosservicos.productapi.modules.supplier.controller;
 
+import br.com.comunicacaomicrosservicos.productapi.config.exception.SucessResponse;
 import br.com.comunicacaomicrosservicos.productapi.modules.category.dto.CategoryResponse;
 import br.com.comunicacaomicrosservicos.productapi.modules.supplier.dto.SupplierRequest;
 import br.com.comunicacaomicrosservicos.productapi.modules.supplier.dto.SupplierResponse;
@@ -34,5 +35,15 @@ public class SupplierController {
     @GetMapping("name/{name}")
     public List<SupplierResponse> findByName(@PathVariable String name) {
         return service.findByName(name);
+    }
+
+    @DeleteMapping("{id}")
+    public SucessResponse delete(@PathVariable Integer id) {
+        return service.delete(id);
+    }
+
+    @PutMapping("{id}")
+    public SupplierResponse update(@RequestBody SupplierRequest request, @PathVariable Integer id) {
+        return service.update(request, id);
     }
 }
