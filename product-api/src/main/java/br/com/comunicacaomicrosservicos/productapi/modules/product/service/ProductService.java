@@ -4,6 +4,7 @@ import br.com.comunicacaomicrosservicos.productapi.config.exception.SucessRespon
 import br.com.comunicacaomicrosservicos.productapi.modules.category.service.CategoryService;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductRequest;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductResponse;
+import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductStockDto;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.model.Product;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.repository.ProductRepository;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.utils.ProductExceptions;
@@ -113,6 +114,10 @@ public class ProductService {
 
     public Boolean existsBySupplierId(Integer supplierId) {
         return repository.existsBySupplierId(supplierId);
+    }
+
+    public void updateProductStock(ProductStockDto productStockDto) {
+
     }
 
     private void validateProductData(ProductRequest request) {
