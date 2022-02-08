@@ -1,7 +1,6 @@
 package br.com.comunicacaomicrosservicos.productapi.modules.supplier.controller;
 
 import br.com.comunicacaomicrosservicos.productapi.config.exception.SucessResponse;
-import br.com.comunicacaomicrosservicos.productapi.modules.category.dto.CategoryResponse;
 import br.com.comunicacaomicrosservicos.productapi.modules.supplier.dto.SupplierRequest;
 import br.com.comunicacaomicrosservicos.productapi.modules.supplier.dto.SupplierResponse;
 import br.com.comunicacaomicrosservicos.productapi.modules.supplier.service.SupplierService;

@@ -4,8 +4,6 @@ import br.com.comunicacaomicrosservicos.productapi.config.exception.SucessRespon
 import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductRequest;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductResponse;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.service.ProductService;
-import br.com.comunicacaomicrosservicos.productapi.modules.supplier.dto.SupplierRequest;
-import br.com.comunicacaomicrosservicos.productapi.modules.supplier.dto.SupplierResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

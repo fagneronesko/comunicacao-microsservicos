@@ -7,8 +7,6 @@ import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductRe
 import br.com.comunicacaomicrosservicos.productapi.modules.product.model.Product;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.repository.ProductRepository;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.utils.ProductExceptions;
-import br.com.comunicacaomicrosservicos.productapi.modules.supplier.dto.SupplierResponse;
-import br.com.comunicacaomicrosservicos.productapi.modules.supplier.model.Supplier;
 import br.com.comunicacaomicrosservicos.productapi.modules.supplier.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +17,6 @@ import java.util.stream.Collectors;
 import static br.com.comunicacaomicrosservicos.productapi.modules.product.utils.ProductConstants.DELETE_SUCCESS;
 import static br.com.comunicacaomicrosservicos.productapi.modules.product.utils.ProductExceptions.*;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Service
