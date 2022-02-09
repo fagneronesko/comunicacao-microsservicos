@@ -1,25 +1,34 @@
 package br.com.comunicacaomicrosservicos.productapi.modules.product.service;
 
 import br.com.comunicacaomicrosservicos.productapi.config.exception.SucessResponse;
+import br.com.comunicacaomicrosservicos.productapi.config.exception.ValidationException;
 import br.com.comunicacaomicrosservicos.productapi.modules.category.service.CategoryService;
+import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductQuantityDto;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductRequest;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductResponse;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductStockDto;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.model.Product;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.repository.ProductRepository;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.utils.ProductExceptions;
+import br.com.comunicacaomicrosservicos.productapi.modules.rabbitmq.SalesConfirmationSender;
+import br.com.comunicacaomicrosservicos.productapi.modules.sales.dto.SalesConfirmationDto;
+import br.com.comunicacaomicrosservicos.productapi.modules.sales.enums.ESalesStatus;
 import br.com.comunicacaomicrosservicos.productapi.modules.supplier.service.SupplierService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static br.com.comunicacaomicrosservicos.productapi.modules.product.utils.ProductConstants.DELETE_SUCCESS;
+import static br.com.comunicacaomicrosservicos.productapi.modules.product.utils.ProductConstants.OUT_STOCK;
 import static br.com.comunicacaomicrosservicos.productapi.modules.product.utils.ProductExceptions.*;
 import static java.util.Objects.isNull;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
+@Slf4j
 @Service
 public class ProductService {
 
@@ -31,6 +40,8 @@ public class ProductService {
     private CategoryService categoryService;
     @Autowired
     private SupplierService supplierService;
+    @Autowired
+    private SalesConfirmationSender salesConfirmationSender;
 
     public ProductResponse save(ProductRequest request) {
         validateProductData(request);
@@ -116,8 +127,55 @@ public class ProductService {
         return repository.existsBySupplierId(supplierId);
     }
 
-    public void updateProductStock(ProductStockDto productStockDto) {
+    public void updateProductStock(ProductStockDto product) {
+        try {
+            validateStockUpdateData(product);
+            updateStock(product);
+        } catch(Exception ex) {
+            log.error("Error while trying to update stock for message with error: {}",
+                ex.getMessage(), ex);
+            salesConfirmationSender.sendSalesConfirmationMessage(
+                new SalesConfirmationDto(product.getSalesId(), ESalesStatus.REJECTED));
+        }
+    }
 
+    private void updateStock(ProductStockDto product) {
+        var productsForUpdate = new ArrayList<Product>();
+        product
+            .getProducts()
+            .forEach(salesProduct -> {
+                var existingProduct = findById(salesProduct.getProductId());
+                validateQuantityInStock(existingProduct, salesProduct);
+                existingProduct.updateStock(salesProduct.getQuantity());
+                productsForUpdate.add(existingProduct);
+            });
+        if (!isEmpty(productsForUpdate)) {
+            repository.saveAll(productsForUpdate);
+            salesConfirmationSender.sendSalesConfirmationMessage(
+                new SalesConfirmationDto(product.getSalesId(), ESalesStatus.APPROVED));
+        }
+    }
+
+    private void validateQuantityInStock(Product product, ProductQuantityDto salesProduct) {
+        if (salesProduct.getQuantity() > product.getQuantityAvailable()) {
+            throw new ValidationException(String.format(OUT_STOCK, product.getId()));
+        }
+    }
+
+    private void validateStockUpdateData(ProductStockDto product) {
+        if (isEmpty(product) || isEmpty(product.getSalesId())) {
+            throw EX_PRODUCT_OR_SALES_ID_NULL;
+        }
+        if (isEmpty(product.getProducts())) {
+            throw EX_PRODUCTS_EMPTY;
+        }
+
+        product.getProducts()
+            .forEach(salesProduct -> {
+                if (isEmpty(salesProduct.getQuantity()) || isEmpty(salesProduct.getProductId())) {
+                    throw EX_QUANTITY_OR_PRODUCT_ID_NULL;
+                }
+            });
     }
 
     private void validateProductData(ProductRequest request) {

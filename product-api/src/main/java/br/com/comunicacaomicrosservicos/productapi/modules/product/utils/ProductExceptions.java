@@ -24,4 +24,13 @@ public class ProductExceptions {
 
     public static ValidationException EX_QUANTITY_INVALID =
         new ValidationException("The product quantity not be less or equal to zero.");
+
+    public static ValidationException EX_PRODUCT_OR_SALES_ID_NULL =
+        new ValidationException("The product data or sales ID cannot be null.");
+
+    public static ValidationException EX_PRODUCTS_EMPTY =
+        new ValidationException("The sales products must be informed.");
+
+    public static ValidationException EX_QUANTITY_OR_PRODUCT_ID_NULL =
+        new ValidationException("The product ID and the quantity must be informed.");
 }
