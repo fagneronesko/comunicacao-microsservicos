@@ -3,6 +3,7 @@ package br.com.comunicacaomicrosservicos.productapi.modules.product.controller;
 import br.com.comunicacaomicrosservicos.productapi.config.exception.SucessResponse;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductRequest;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductResponse;
+import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductSalesResponse;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -55,5 +56,11 @@ public class ProductController {
     public ProductResponse update(@RequestBody ProductRequest request, @PathVariable Integer id) {
         return service.update(request, id);
     }
+
+    @GetMapping("{id}/sales")
+    public ProductSalesResponse findProductSales(@PathVariable Integer id) {
+        return service.findProductSales(id);
+    }
+
 }
 

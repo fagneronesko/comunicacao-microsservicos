@@ -3,14 +3,12 @@ package br.com.comunicacaomicrosservicos.productapi.modules.product.service;
 import br.com.comunicacaomicrosservicos.productapi.config.exception.SucessResponse;
 import br.com.comunicacaomicrosservicos.productapi.config.exception.ValidationException;
 import br.com.comunicacaomicrosservicos.productapi.modules.category.service.CategoryService;
-import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductQuantityDto;
-import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductRequest;
-import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductResponse;
-import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.ProductStockDto;
+import br.com.comunicacaomicrosservicos.productapi.modules.product.dto.*;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.model.Product;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.repository.ProductRepository;
 import br.com.comunicacaomicrosservicos.productapi.modules.product.utils.ProductExceptions;
 import br.com.comunicacaomicrosservicos.productapi.modules.rabbitmq.SalesConfirmationSender;
+import br.com.comunicacaomicrosservicos.productapi.modules.sales.client.SalesClient;
 import br.com.comunicacaomicrosservicos.productapi.modules.sales.dto.SalesConfirmationDto;
 import br.com.comunicacaomicrosservicos.productapi.modules.sales.enums.ESalesStatus;
 import br.com.comunicacaomicrosservicos.productapi.modules.supplier.service.SupplierService;
@@ -42,6 +40,8 @@ public class ProductService {
     private SupplierService supplierService;
     @Autowired
     private SalesConfirmationSender salesConfirmationSender;
+    @Autowired
+    private SalesClient salesClient;
 
     public ProductResponse save(ProductRequest request) {
         validateProductData(request);
@@ -136,6 +136,17 @@ public class ProductService {
                 ex.getMessage(), ex);
             salesConfirmationSender.sendSalesConfirmationMessage(
                 new SalesConfirmationDto(product.getSalesId(), ESalesStatus.REJECTED));
+        }
+    }
+
+    public ProductSalesResponse findProductSales(Integer id) {
+        var product = findById(id);
+        try {
+            var sales = salesClient.findSalesByProductId(id)
+                .orElseThrow(() -> EX_SALES_NOT_FOUND_BY_PRODUCT);
+            return ProductSalesResponse.of(product, sales.getSalesIds());
+        } catch (Exception ex) {
+            throw EX_ERROR_GET_PRODUCTS_SALES;
         }
     }
 

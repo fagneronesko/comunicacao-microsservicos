@@ -33,4 +33,10 @@ public class ProductExceptions {
 
     public static ValidationException EX_QUANTITY_OR_PRODUCT_ID_NULL =
         new ValidationException("The product ID and the quantity must be informed.");
+
+    public static ValidationException EX_ERROR_GET_PRODUCTS_SALES =
+        new ValidationException("There was an error trying to get the product's sales.");
+
+    public static ValidationException EX_SALES_NOT_FOUND_BY_PRODUCT =
+        new ValidationException("The sales was not found by this product.");
 }
