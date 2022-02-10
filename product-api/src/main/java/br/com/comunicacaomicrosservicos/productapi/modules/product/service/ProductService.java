@@ -20,8 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static br.com.comunicacaomicrosservicos.productapi.modules.product.utils.ProductConstants.DELETE_SUCCESS;
-import static br.com.comunicacaomicrosservicos.productapi.modules.product.utils.ProductConstants.OUT_STOCK;
+import static br.com.comunicacaomicrosservicos.productapi.modules.product.utils.ProductConstants.*;
 import static br.com.comunicacaomicrosservicos.productapi.modules.product.utils.ProductExceptions.*;
 import static java.util.Objects.isNull;
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -147,6 +146,27 @@ public class ProductService {
             return ProductSalesResponse.of(product, sales.getSalesIds());
         } catch (Exception ex) {
             throw EX_ERROR_GET_PRODUCTS_SALES;
+        }
+    }
+
+    public SucessResponse checkProductsStock(ProductCheckStockRequest request) {
+        if (isEmpty(request) || isEmpty(request.getProducts())) {
+            throw EX_REQUEST_DATA_EMPTY;
+        }
+        request
+            .getProducts()
+            .forEach(this::validateStock);
+
+        return SucessResponse.create(STOCK_OK);
+    }
+
+    private void validateStock(ProductQuantityDto productQuantity) {
+        if (isEmpty(productQuantity) || isEmpty(productQuantity.getQuantity())) {
+            throw EX_QUANTITY_OR_PRODUCT_ID_NULL;
+        }
+        var product = findById(productQuantity.getProductId());
+        if (productQuantity.getQuantity() > product.getQuantityAvailable()) {
+            throw new ValidationException(String.format(OUT_STOCK, product.getId()));
         }
     }
 

@@ -39,4 +39,7 @@ public class ProductExceptions {
 
     public static ValidationException EX_SALES_NOT_FOUND_BY_PRODUCT =
         new ValidationException("The sales was not found by this product.");
+
+    public static ValidationException EX_REQUEST_DATA_EMPTY =
+        new ValidationException("The request data must be informed.");
 }
