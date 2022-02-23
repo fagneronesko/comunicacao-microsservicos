@@ -12,4 +12,5 @@ public class SalesConfirmationDto {
 
     private String salesId;
     private ESalesStatus status;
+    private String transactionId;
 }

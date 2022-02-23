@@ -37,7 +37,7 @@ app.get("/api/initial-data", async (req, res) => {
     return res.json({ message: "Data created." });
 });
 
-//app.use(tracing);
+app.use(tracing);
 app.use(checkToken);
 app.use(orderRoutes);
 
