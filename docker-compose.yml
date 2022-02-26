@@ -2,19 +2,22 @@ version: "3"
 services:
 
   sales-db:
-    image: tutum/mongodb
+    image: mongo:4.0.8
     container_name: sales-db
     restart: always
+    command: mongod --auth
     networks: 
       - sales-network
     environment:
-      - MONGODB_USER=admin
-      - MONGODB_DATABASE=sales 
-      - MONGODB_PASS="123456
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+      MONGO_INITDB_DATABASE: sales
+      MONGODB_DATA_DIR: /data/db
+      MONDODB_LOG_DIR: /dev/null  
     ports: 
       - 27017:27017 
       - 28017:28017
-
+        
   auth-db:
     image: postgres:11
     container_name: auth-db
@@ -86,14 +89,16 @@ services:
     depends_on:
       - sales-db
       - sales_rabbit
+      - product-api
     networks: 
       - sales-network   
     environment:
       - PORT=8082
       - API_SECRET=YXV0aC1hcGktc2VjcmV0LWNvbnRhaW5lci0xMjM0NTY=
       - MONGO_DB_URL=mongodb://admin:123456@sales-db:27017/admin
-      - RABBIT_MQ_URL=amqp://sales_rabbit:5672
+      - RABBIT_MQ_URL=amqp://guest:guest@sales_rabbit:5672/
       - PRODUCT_API_URL=http://product-api:8081/api/product
+      - NODE_ENV=container
     ports: 
       - 8082:8082
 
@@ -113,6 +118,7 @@ services:
       - DB_USER=admin
       - DB_PASSWORD=123456
       - DB_PORT=5432
+      - NODE_ENV=container
     ports: 
       - 8080:8080
 
