@@ -31,7 +31,7 @@ Repositório contendo o projeto desenvolvido do curso Comunicação entre Micros
 * **Product-API**: Responsável por gerenciar o estoque da aplicação, armazenando os produtos, fornecedores e categoria
 
 
-### Tracing
+## Tracing
 
 * Foi desenvolvido um modo de podermos rastrear as requisições. Onde o "transactionid" transita entre as aplicações e o "serviceid" é interno das aplicações. Para isso deve-se informar um "transactionid" em todas reqs
 
@@ -44,7 +44,7 @@ As 3 APIs foram publicadas no Heroku
 * Sales-API   - https://curso-microsservicos-sales-api.herokuapp.com/
 
 
-### Execução docker-compose
+## Execução docker-compose
 
 O seguinte comando pode ser usado para startar as aplicações:
 
